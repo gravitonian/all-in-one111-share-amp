@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>share-amp</artifactId>
+    <name>share-amp AMP project</name>
+    <packaging>amp</packaging>
+    <description>Manages the lifecycle of the share-amp AMP (Alfresco Module Package)</description>
+
+    <parent>
+        <groupId>org.alfresco.test</groupId>
+        <artifactId>test-42</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <!-- 
+        SDK properties have sensible defaults in the SDK parent,
+        but you can override the properties below to use another version.
+        For more available properties see the alfresco-sdk-parent POM.
+       -->
+    <properties>
+        <!-- Defines the target WAR artifactId to run this amp, only used with the -Pamp-to-war switch
+             Allowed values: alfresco | share. In this case it's configured to use OOTB share -->
+        <app.amp.client.war.artifactId>share</app.amp.client.war.artifactId>
+
+        <!-- Defines the log level used in log4j.properties -->
+        <app.log.root.level>WARN</app.log.root.level>
+    </properties>
+
+    <!-- Following dependencies are needed for compiling Java code in src/main/java;  -->
+    <dependencies>
+        <!--
+            Include libs that the Share JAR extension will use.
+            They are mostly provided by Alfresco during runtime so scope should be set as provided
+            (if in doubt then check for the lib in tomcat/webapps/share/WEB-INF/lib, if it's there then it's provided).
+        -->
+        <!-- Include JAR that has classes such as BaseEvaluator -->
+        <dependency>
+            <groupId>${alfresco.groupId}</groupId>
+            <artifactId>alfresco-share</artifactId>
+            <version>${alfresco.version}</version>
+            <scope>provided</scope>
+            <exclusions>
+                <!-- Exclude org.alfresco:alfresco-web-framework-commons:jar:classes:4.2.f dependency -->
+                <exclusion>
+                   <groupId>org.alfresco</groupId>
+                    <artifactId>alfresco-web-framework-commons</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- Bring in the correct version of alfresco-web-framework-commons -->
+        <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>alfresco-web-framework-commons</artifactId>
+            <version>${alfresco.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Compress JavaScript files and store as *-min.js -->
+            <plugin>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>yuicompressor-maven-plugin</artifactId>
+                <version>1.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compress</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
